@@ -1,15 +1,13 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-// Main LibrarySystem Class
+// Library System with Structural Design Patterns
 public class LibrarySystem {
 
-    // Composite Design Pattern: BookComponent (Abstract Component)
+    // Composite Pattern: BookComponent and Category
     public interface BookComponent {
         void display();
     }
 
-    // Leaf: Book
     public static class Book implements BookComponent {
         private int bookId;
         private String title;
@@ -27,47 +25,29 @@ public class LibrarySystem {
         }
     }
 
-    // Composite: BookCategory
-    public static class BookCategory implements BookComponent {
-        private String categoryName;
-        private List<BookComponent> components = new ArrayList<>();
+    public static class Category implements BookComponent {
+        private String name;
+        private List<BookComponent> components;
 
-        public BookCategory(String categoryName) {
-            this.categoryName = categoryName;
+        public Category(String name) {
+            this.name = name;
+            components = new ArrayList<>();
         }
 
         public void add(BookComponent component) {
             components.add(component);
         }
 
-        public void remove(BookComponent component) {
-            components.remove(component);
-        }
-
         @Override
         public void display() {
-            System.out.println("Category: " + categoryName);
+            System.out.println("Category: " + name);
             for (BookComponent component : components) {
                 component.display();
             }
         }
     }
 
-    // Adapter Design Pattern: ExternalBookAdapter
-    public static class ExternalBookAdapter implements BookComponent {
-        private ExternalBook externalBook;
-
-        public ExternalBookAdapter(ExternalBook externalBook) {
-            this.externalBook = externalBook;
-        }
-
-        @Override
-        public void display() {
-            System.out.println("Book ID: " + externalBook.getId() + ", Title: " + externalBook.getName() + ", Author: " + externalBook.getWriter());
-        }
-    }
-
-    // External system representation
+    // Adapter Pattern: ExternalBook and ExternalBookAdapter
     public static class ExternalBook {
         private int id;
         private String name;
@@ -92,28 +72,34 @@ public class LibrarySystem {
         }
     }
 
+    public static class ExternalBookAdapter implements BookComponent {
+        private ExternalBook externalBook;
+
+        public ExternalBookAdapter(ExternalBook externalBook) {
+            this.externalBook = externalBook;
+        }
+
+        @Override
+        public void display() {
+            System.out.println("Book ID: " + externalBook.getId() + ", Title: " + externalBook.getName() + ", Author: " + externalBook.getWriter());
+        }
+    }
+
+    // Main Method
     public static void main(String[] args) {
-        // Books and Categories (Composite Pattern)
+        // Create Books and Categories using Composite Pattern
         Book book1 = new Book(1, "The Great Gatsby", "F. Scott Fitzgerald");
         Book book2 = new Book(2, "To Kill a Mockingbird", "Harper Lee");
-        Book book3 = new Book(3, "1984", "George Orwell");
-
-        BookCategory fiction = new BookCategory("Fiction");
+        Category fiction = new Category("Fiction");
         fiction.add(book1);
         fiction.add(book2);
 
-        BookCategory allBooks = new BookCategory("All Books");
-        allBooks.add(fiction);
-        allBooks.add(book3);
-
-        System.out.println("Composite Design Pattern Example:");
-        allBooks.display();
-
-        // External Book Integration (Adapter Pattern)
+        // External Book Adapter (simulating integration with an external system)
         ExternalBook externalBook = new ExternalBook(101, "The Alchemist", "Paulo Coelho");
         BookComponent adaptedBook = new ExternalBookAdapter(externalBook);
 
-        System.out.println("\nAdapter Design Pattern Example:");
+        // Display Library Items
+        fiction.display();
         adaptedBook.display();
     }
 }
