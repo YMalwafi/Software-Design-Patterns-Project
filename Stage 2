@@ -1,15 +1,15 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+// Library System with Creational Design Patterns
 public class LibrarySystem {
 
-    // Singleton Design Pattern for Library
+    // Singleton Pattern: Library
     public static class Library {
-        private static Library instance; // Single instance of Library
-        private List<Book> books;
+        private static Library instance; // Singleton instance
+        private List<Book> items;
 
         private Library() {
-            books = new ArrayList<>();
+            items = new ArrayList<>();
         }
 
         public static Library getInstance() {
@@ -19,36 +19,35 @@ public class LibrarySystem {
             return instance;
         }
 
-        public void addBook(Book book) {
-            books.add(book);
+        public void addItem(Book item) {
+            items.add(item);
         }
 
         public void displayLibrary() {
             System.out.println("Library Inventory:");
-            for (Book book : books) {
-                book.displayBookInfo();
+            for (Book item : items) {
+                item.display();
             }
         }
     }
 
-    // Builder Design Pattern for Book
+    // Builder Pattern: Book
     public static class Book {
         private int bookId;
         private String title;
         private String author;
 
-        // Private constructor to enforce the use of Builder
         private Book(BookBuilder builder) {
             this.bookId = builder.bookId;
             this.title = builder.title;
             this.author = builder.author;
         }
 
-        public void displayBookInfo() {
+        public void display() {
             System.out.println("Book ID: " + bookId + ", Title: " + title + ", Author: " + author);
         }
 
-        // Static Builder Class
+        // Builder class for constructing Book objects
         public static class BookBuilder {
             private int bookId;
             private String title;
@@ -75,42 +74,9 @@ public class LibrarySystem {
         }
     }
 
-    public static class Borrower {
-        private String name;
-        private List<Book> borrowedBooks;
-
-        public Borrower(String name) {
-            this.name = name;
-            this.borrowedBooks = new ArrayList<>();
-        }
-
-        public void borrowBook(Book book) {
-            borrowedBooks.add(book);
-            System.out.println(name + " has borrowed the book: " + book.title);
-        }
-
-        public void displayBorrowedBooks() {
-            System.out.println(name + "'s Borrowed Books:");
-            for (Book book : borrowedBooks) {
-                book.displayBookInfo();
-            }
-        }
-    }
-
-    public static class Person {
-        private String name;
-
-        public Person(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
+    // Main Method
     public static void main(String[] args) {
-        // Creating books using the Builder pattern
+        // Creating books using Builder Pattern
         Book book1 = new Book.BookBuilder()
                 .setBookId(1)
                 .setTitle("The Great Gatsby")
@@ -129,24 +95,13 @@ public class LibrarySystem {
                 .setAuthor("George Orwell")
                 .build();
 
-        // Using Singleton pattern for the Library
+        // Using Singleton Pattern for Library
         Library library = Library.getInstance();
-        library.addBook(book1);
-        library.addBook(book2);
-        library.addBook(book3);
+        library.addItem(book1);
+        library.addItem(book2);
+        library.addItem(book3);
 
-        // Creating a borrower and borrowing books
-        Borrower borrower = new Borrower("Mohammed");
-        borrower.borrowBook(book1);
-        borrower.borrowBook(book2);
-
-        // Creating a person
-        Person person = new Person("Mohammed");
-
-        // Displaying library inventory, borrower's borrowed books, and person's name
+        // Display Library
         library.displayLibrary();
-        borrower.displayBorrowedBooks();
-        System.out.println("Person's name: " + person.getName());
     }
 }
-
