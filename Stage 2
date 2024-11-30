@@ -3,11 +3,20 @@ import java.util.List;
 
 public class LibrarySystem {
 
+    // Singleton Design Pattern for Library
     public static class Library {
+        private static Library instance; // Single instance of Library
         private List<Book> books;
 
-        public Library() {
+        private Library() {
             books = new ArrayList<>();
+        }
+
+        public static Library getInstance() {
+            if (instance == null) {
+                instance = new Library();
+            }
+            return instance;
         }
 
         public void addBook(Book book) {
@@ -22,19 +31,47 @@ public class LibrarySystem {
         }
     }
 
+    // Builder Design Pattern for Book
     public static class Book {
         private int bookId;
         private String title;
         private String author;
 
-        public Book(int bookId, String title, String author) {
-            this.bookId = bookId;
-            this.title = title;
-            this.author = author;
+        // Private constructor to enforce the use of Builder
+        private Book(BookBuilder builder) {
+            this.bookId = builder.bookId;
+            this.title = builder.title;
+            this.author = builder.author;
         }
 
         public void displayBookInfo() {
             System.out.println("Book ID: " + bookId + ", Title: " + title + ", Author: " + author);
+        }
+
+        // Static Builder Class
+        public static class BookBuilder {
+            private int bookId;
+            private String title;
+            private String author;
+
+            public BookBuilder setBookId(int bookId) {
+                this.bookId = bookId;
+                return this;
+            }
+
+            public BookBuilder setTitle(String title) {
+                this.title = title;
+                return this;
+            }
+
+            public BookBuilder setAuthor(String author) {
+                this.author = author;
+                return this;
+            }
+
+            public Book build() {
+                return new Book(this);
+            }
         }
     }
 
@@ -73,13 +110,27 @@ public class LibrarySystem {
     }
 
     public static void main(String[] args) {
-        // Creating books directly
-        Book book1 = new Book(1, "The Great Gatsby", "F. Scott Fitzgerald");
-        Book book2 = new Book(2, "To Kill a Mockingbird", "Harper Lee");
-        Book book3 = new Book(3, "1984", "George Orwell");
+        // Creating books using the Builder pattern
+        Book book1 = new Book.BookBuilder()
+                .setBookId(1)
+                .setTitle("The Great Gatsby")
+                .setAuthor("F. Scott Fitzgerald")
+                .build();
 
-        // Creating a library
-        Library library = new Library();
+        Book book2 = new Book.BookBuilder()
+                .setBookId(2)
+                .setTitle("To Kill a Mockingbird")
+                .setAuthor("Harper Lee")
+                .build();
+
+        Book book3 = new Book.BookBuilder()
+                .setBookId(3)
+                .setTitle("1984")
+                .setAuthor("George Orwell")
+                .build();
+
+        // Using Singleton pattern for the Library
+        Library library = Library.getInstance();
         library.addBook(book1);
         library.addBook(book2);
         library.addBook(book3);
@@ -96,7 +147,6 @@ public class LibrarySystem {
         library.displayLibrary();
         borrower.displayBorrowedBooks();
         System.out.println("Person's name: " + person.getName());
-    }
+    }
 }
 
-how many classes in this code
